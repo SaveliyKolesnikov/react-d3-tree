@@ -125,7 +125,10 @@ export default class Tree extends React.Component {
                 translate: { x: event.translate[0], y: event.translate[1] },
               });
               this.internalState.d3.scale = event.scale;
-              this.internalState.d3.translate = { x: event.translate[0], y: event.translate[1] };
+              this.internalState.d3.translate = {
+                x: event.translate[0],
+                y: event.translate[1],
+              };
             }
           })
           // Offset so that first pan and zoom does not jump back to [0,0] coords
@@ -431,8 +434,13 @@ export default class Tree extends React.Component {
       styles,
     } = this.props;
     const { translate, scale } = this.internalState.d3;
-    const subscriptions = { ...nodeSize, ...separation, depthFactor, initialDepth };
-
+    const subscriptions = {
+      ...nodeSize,
+      ...separation,
+      depthFactor,
+      initialDepth,
+    };
+    const { onLineDrawing } = this.props;
     return (
       <div className={`rd3t-tree-container ${zoomable ? 'rd3t-grabbable' : undefined}`}>
         <svg className={rd3tSvgClassName} width="100%" height="100%">
@@ -450,6 +458,7 @@ export default class Tree extends React.Component {
                 linkData={linkData}
                 transitionDuration={transitionDuration}
                 styles={styles.links}
+                onLineDrawing={onLineDrawing}
               />
             ))}
 
@@ -503,6 +512,7 @@ Tree.defaultProps = {
   initialDepth: undefined,
   zoomable: true,
   zoom: 1,
+  onLineDrawing: null,
   scaleExtent: { min: 0.1, max: 1 },
   nodeSize: { x: 140, y: 140 },
   separation: { siblings: 1, nonSiblings: 2 },
@@ -542,6 +552,7 @@ Tree.propTypes = {
   initialDepth: T.number,
   zoomable: T.bool,
   zoom: T.number,
+  onLineDrawing: T.func,
   scaleExtent: T.shape({
     min: T.number,
     max: T.number,
